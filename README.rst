@@ -14,7 +14,7 @@ Install using setuptools, e.g. (within a virtualenv):
 
 Or if you prefer to get the latest from Github:
 
-    $ git clone git@github.com:jessedhillon/pyramid_scss.git
+    $ git clone git://github.com/jessedhillon/pyramid_scss.git
 
 Configuration
 ===============

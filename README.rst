@@ -35,9 +35,11 @@ The other option is ``cache``, which will store both the contents of the file an
 Usage
 ===============
 First, use ``config.include`` to initialize the extension:
+
     ``config.include("pyramid_scss")``
 
 Second, assuming you are using URL dispatch, add a route to serve css:
+
     ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss', renderer='scss', request_method='GET')``
 
     ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss', renderer='scss', request_method='GET')``

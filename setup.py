@@ -21,7 +21,6 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
-        "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         "Topic :: Software Development :: Code Generators",

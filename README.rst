@@ -10,40 +10,40 @@ Installation
 ============
 Install using setuptools, e.g. (within a virtualenv):
 
-    ``$ pip install pyramid_scss``
+    $ pip install pyramid_scss
 
 Or if you prefer to get the latest from Github:
 
-    ``$ git clone git@github.com:jessedhillon/pyramid_scss.git``
+    $ git clone git@github.com:jessedhillon/pyramid_scss.git
 
 Configuration
 ===============
 The only setting which is necessary is ``asset_path`` which is an asset spec which points to the root folder where your SCSS stylesheets are. An easy way to set that is to add this line to your ``project.ini``:
 
-    ``scss.asset_path = myproject:assets/scss``
+    scss.asset_path = myproject:assets/scss
 
 ``asset_path`` can be a newline delimited string of multiple asset paths. Each path will be searched, in order, until the matching stylesheet is found. An unmatched request will raise ``pyramid.httpexceptions.HTTPNotFound``.
 
 There are a couple of other options. ``compress`` controls whether or not the output documents are compressed (all whitespace stripped)
 
-    ``scss.compress = false``
+    scss.compress = false
 
 The other option is ``cache``, which will store both the contents of the file and the rendered output in memory.
 
-    ``scss.cache = true``
+    scss.cache = true
 
 Usage
 ===============
 First, use ``config.include`` to initialize the extension:
 
-    ``config.include("pyramid_scss")``
+    config.include("pyramid_scss")
 
 Second, assuming you are using URL dispatch, add a route to serve css:
 
-    ``config.add_route('css', '/css/{css_path:.*}.css')``
+    config.add_route('css', '/css/{css_path:.*}.css')
 
-    ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss',``
-                    ``renderer='scss', request_method='GET')``
+    config.add_view(route_name='css', view='pyramid_scss.controller.get_scss',
+        renderer='scss', request_method='GET')
 
 *TODO:* Add a traversal example.
 

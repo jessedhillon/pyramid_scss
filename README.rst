@@ -40,9 +40,10 @@ First, use ``config.include`` to initialize the extension:
 
 Second, assuming you are using URL dispatch, add a route to serve css:
 
-    ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss', renderer='scss', request_method='GET')``
+    ``config.add_route('css', '/css/{css_path:.*}.css')``
 
-    ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss', renderer='scss', request_method='GET')``
+    ``config.add_view(route_name='css', view='pyramid_scss.controller.get_scss',``
+                    ``renderer='scss', request_method='GET')``
 
 *TODO:* Add a traversal example.
 

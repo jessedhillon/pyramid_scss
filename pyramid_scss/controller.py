@@ -31,10 +31,11 @@ def _get_asset_path(request):
     return paths
 
 def _load_asset(request):
+    caching = request.registry.settings.get('scss.cache', False)
     paths = _get_asset_path(request)
 
     for p in paths:
-        if p in _Cache:
+        if caching and p in _Cache:
             return _Cache.get(p)
 
         if os.path.exists(p):

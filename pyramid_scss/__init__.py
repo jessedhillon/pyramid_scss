@@ -6,7 +6,9 @@ from zope.interface import Interface
 
 from pyramid.interfaces import ITemplateRenderer
 from pyramid.exceptions import ConfigurationError
+from pyramid.resource import abspath_from_asset_spec
 
+import scss
 from scss import Scss
 
 Logger = logging.getLogger('pyramid_scss')
@@ -26,6 +28,18 @@ def as_bool(s, default=False):
 
 def prefixed_keys(d, prefix):
     return dict([(k.replace(prefix, ''), v) for k, v in d.items() if k.startswith(prefix)])
+
+def _get_import_paths(settings):
+    if 'scss.asset_path' not in settings:
+        raise ConfigurationError('SCSS renderer requires ``scss.asset_path`` setting')
+
+    paths = []
+    for s in settings.get('scss.asset_path').split('\n'):
+        if s:
+            p = abspath_from_asset_spec(s.strip())
+            paths.append(p)
+
+    return paths
 
 def renderer_factory(info):
     settings = prefixed_keys(info.settings, 'scss.')
@@ -63,4 +77,6 @@ class ScssRenderer(object):
         return parser.compile(scss)
 
 def includeme(config):
+    paths = _get_import_paths(config.registry.settings)
+    scss.LOAD_PATHS = ",".join(paths)
     config.add_renderer('scss', renderer_factory)

@@ -71,14 +71,15 @@ class ScssRenderer(object):
         parser = Scss(scss_opts=self.options)
 
         if 'request' in system:
-            request = system['request']
+            request = system.get('request')
             request.response_content_type = 'text/css'
+            key = request.matchdict.get('css_path')
 
-            if not self.options.get('cache', False) or scss not in self.cache:
+            if not self.options.get('cache', False) or key not in self.cache:
                 Logger.info('generating %s', request.matchdict.get('css_path'))
-                self.cache[scss] = parser.compile(scss)
+                self.cache[key] = parser.compile(scss)
 
-            return self.cache.get(scss)
+            return self.cache.get(key)
 
         return parser.compile(scss)
 

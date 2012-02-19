@@ -33,13 +33,19 @@ def _get_import_paths(settings):
     if 'scss.asset_path' not in settings:
         raise ConfigurationError('SCSS renderer requires ``scss.asset_path`` setting')
 
-    paths = []
+    load_paths = []
     for s in settings.get('scss.asset_path').split('\n'):
         if s:
             p = abspath_from_asset_spec(s.strip())
-            paths.append(p)
+            load_paths.append(p)
+            Logger.info('adding asset path %s', p)
 
-    return paths
+    static_path = settings.get('scss.static_path', '')
+    if static_path:
+        static_path = abspath_from_asset_spec(static_path.strip())
+        Logger.info('setting static path %s', static_path)
+
+    return (load_paths, static_path)
 
 def renderer_factory(info):
     settings = prefixed_keys(info.settings, 'scss.')
@@ -69,7 +75,7 @@ class ScssRenderer(object):
             request.response_content_type = 'text/css'
 
             if not self.options.get('cache', False) or scss not in self.cache:
-                Logger.info('caching %s', request.matchdict.get('css_path'))
+                Logger.info('generating %s', request.matchdict.get('css_path'))
                 self.cache[scss] = parser.compile(scss)
 
             return self.cache.get(scss)
@@ -77,6 +83,7 @@ class ScssRenderer(object):
         return parser.compile(scss)
 
 def includeme(config):
-    paths = _get_import_paths(config.registry.settings)
-    scss.LOAD_PATHS = ",".join(paths)
+    load_paths, static_path = _get_import_paths(config.registry.settings)
+    scss.LOAD_PATHS = ','.join([scss.LOAD_PATHS, ','.join(load_paths)])
+    scss.STATIC_ROOT = static_path
     config.add_renderer('scss', renderer_factory)

@@ -76,7 +76,7 @@ class ScssRenderer(object):
             key = request.matchdict.get('css_path')
 
             if not self.options.get('cache', False) or key not in self.cache:
-                Logger.info('generating %s', request.matchdict.get('css_path'))
+                Logger.info('generating %s', key)
                 self.cache[key] = parser.compile(scss)
 
             return self.cache.get(key)

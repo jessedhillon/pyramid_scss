@@ -29,7 +29,7 @@ setup(
     author_email='jesse@deva0.net',
     url='https://github.com/jessedhillon/pyramid_scss',
     keywords='web wsgi css scss pyramid',
-    packages=find_packages(),
+    packages=find_packages(exclude=['*.tests']),
     include_package_data=True,
     zip_safe=False,
     install_requires = requires,

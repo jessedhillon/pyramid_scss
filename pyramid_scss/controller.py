@@ -5,7 +5,6 @@ from pyramid.exceptions import ConfigurationError
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.resource import abspath_from_asset_spec
 
-_Cache = {}
 Logger = logging.getLogger('pyramid_scss')
 
 def get_scss(root, request):
@@ -31,15 +30,11 @@ def _get_asset_path(request):
     return paths
 
 def _load_asset(request):
-    caching = request.registry.settings.get('scss.cache', False)
     paths = _get_asset_path(request)
 
     for p in paths:
-        if caching and p in _Cache:
-            return _Cache.get(p)
-
         if os.path.exists(p):
-            _Cache[p] = open(p).read()
-            return _Cache.get(p)
+            with open(p) as f:
+                return f.read()
 
     return None

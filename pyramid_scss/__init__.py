@@ -82,7 +82,7 @@ class ScssRenderer(object):
 
         if 'request' in system:
             request = system.get('request')
-            request.response_content_type = 'text/css'
+            request.response.content_type = 'text/css'
             key = request.matchdict.get('css_path')
 
             if not self.options.get('cache', False) or key not in self.cache:

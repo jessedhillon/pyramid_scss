@@ -85,6 +85,6 @@ class ScssRenderer(object):
 
 def includeme(config):
     load_paths, static_path = _get_import_paths(config.registry.settings)
-    scss.LOAD_PATHS = ','.join([scss.LOAD_PATHS, ','.join(load_paths)])
+    scss.config.LOAD_PATHS = ','.join([scss.config.LOAD_PATHS, ','.join(load_paths)])
     scss.STATIC_ROOT = static_path
     config.add_renderer('scss', renderer_factory)

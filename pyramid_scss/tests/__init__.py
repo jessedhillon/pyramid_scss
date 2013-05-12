@@ -1,5 +1,6 @@
 import os
 import csv
+from collections import namedtuple
 
 from unittest import TestCase
 from pyramid import testing
@@ -41,4 +42,4 @@ class DummyRequest(object):
     def __init__(self, registry):
         self.registry = registry
         self.matchdict = {}
-        self.response_content_type = None
+        self.response = namedtuple('Response', ['content_type'])

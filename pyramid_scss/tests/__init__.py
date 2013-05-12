@@ -10,7 +10,14 @@ import pyramid_scss
 
 class PyramidScssTestCase(TestCase):
     scss_settings = {
-        'scss.asset_path': 'pyramid_scss.tests:fixtures',
+        'scss.asset_path': """
+            pyramid_scss.tests:fixtures
+            pyramid_scss.tests:fixtures/resources
+        """,
+        'scss.static_path': 'pyramid_scss.tests:fixtures/static',
+        'scss.static_url_root': '/static/',
+        'scss.output_path': 'pyramid_scss.tests:fixtures/compiled',
+        'scss.output_url_root': '/compiled/',
         'scss.cache': True,
     }
 

@@ -10,12 +10,13 @@ changes = open(os.path.join(here, 'CHANGES.rst'), 'r').read()
 requires = [
     'pyramid',
     'zope.interface',
-    'pyScss',
+    'pyScss>=1.1.5',
+    'PIL',
 ]
 
 setup(
     name='pyramid_scss',
-    version='0.2.1',
+    version='0.3',
     description="Adds support for SCSS to Pyramid projects",
     long_description="{0}\n\n{1}".format(readme, changes),
     classifiers=[
@@ -32,5 +33,5 @@ setup(
     packages=find_packages(exclude=['*.tests']),
     include_package_data=True,
     zip_safe=False,
-    install_requires = requires,
+    install_requires=requires,
 )

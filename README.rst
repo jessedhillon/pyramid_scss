@@ -24,7 +24,9 @@ The only setting which is necessary is ``asset_path`` which is an asset spec whi
 
 ``asset_path`` can be a newline delimited string of multiple asset paths. Each path will be searched, in order, until the matching stylesheet is found. An unmatched request will raise ``pyramid.httpexceptions.HTTPNotFound``.
 
-``static_path`` is a path to the static assets (images mainly) necessary to construct a stylesheet. Unlike ``asset_path``, this setting only accepts one path, and because of this, ``asset_path`` will be renamed to ``asset_paths`` in the future.
+``static_path`` is a path to the static assets necessary to construct a stylesheet. Unlike ``asset_path``, this setting only accepts one path. ``static_url_root`` is required if you set ``static_path``, and it serves as a path prefix when generating the URL for a static resource.
+
+``output_path`` is the path where generated assets will be output, such as spritemaps. Also, ``output_url_root`` is a required setting if ``output_path`` is provided, and will be prefix the path component of the URL generated in reference to compiled resources.
 
 There are a couple of other options. ``compress`` controls whether or not the output documents are compressed (all whitespace stripped)::
 

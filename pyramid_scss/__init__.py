@@ -7,29 +7,18 @@ from zope.interface import Interface
 from pyramid.interfaces import ITemplateRenderer
 from pyramid.exceptions import ConfigurationError
 from pyramid.resource import abspath_from_asset_spec
+from pyramid.settings import asbool
 
 import scss
 from scss import Scss
 
 Logger = logging.getLogger('pyramid_scss')
 
-def as_bool(s, default=False):
-    if isinstance(s, bool):
-        return s
-
-    if isinstance(s, basestring):
-        if s.lower() in ['true', 'yes', 'on', '1']:
-            return True
-
-        if s.lower() in ['false', 'no', 'off', '0']:
-            return False
-
-    return default
-
 def prefixed_keys(d, prefix):
     return dict([(k.replace(prefix, ''), v) for k, v in d.items() if k.startswith(prefix)])
 
 def _get_import_paths(settings):
+    # `scss.asset_path` is the path which should be searched to resolve a request
     if 'scss.asset_path' not in settings:
         raise ConfigurationError('SCSS renderer requires ``scss.asset_path`` setting')
 
@@ -40,12 +29,25 @@ def _get_import_paths(settings):
             load_paths.append(p)
             Logger.info('adding asset path %s', p)
 
+    # `scss.static_path`, optional, is the path which should be searched to resolve references to static assets in stylesheets
     static_path = settings.get('scss.static_path', '')
     if static_path:
+        if 'scss.static_url_root' not in settings:
+            raise ConfigurationError('SCSS renderer requires ``scss.static_url_root`` setting if ``scss.static_path`` is provided')
+
         static_path = abspath_from_asset_spec(static_path.strip())
         Logger.info('setting static path %s', static_path)
 
-    return (load_paths, static_path)
+    # `scss.output_path`, optional, is the path where generated spritemaps should be written
+    assets_path = settings.get('scss.output_path', '')
+    if assets_path:
+        if 'scss.output_url_root' not in settings:
+            raise ConfigurationError('SCSS renderer requires ``scss.output_url_root`` setting if ``scss.output_path`` is provided')
+
+        assets_path = abspath_from_asset_spec(assets_path.strip())
+        Logger.info('setting output path %s', assets_path)
+
+    return (load_paths, static_path, assets_path)
 
 def renderer_factory(info):
     settings = prefixed_keys(info.settings, 'scss.')
@@ -55,7 +57,7 @@ def renderer_factory(info):
         'cache': settings.get('cache', False),
     }
 
-    options = dict((k, as_bool(v)) for k, v in options.items())
+    options = dict((k, asbool(v)) for k, v in options.items())
     return ScssRenderer(info, options)
 
 class ScssRenderer(object):
@@ -84,7 +86,14 @@ class ScssRenderer(object):
         return parser.compile(scss)
 
 def includeme(config):
-    load_paths, static_path = _get_import_paths(config.registry.settings)
-    scss.LOAD_PATHS = ','.join([scss.LOAD_PATHS, ','.join(load_paths)])
-    scss.STATIC_ROOT = static_path
+    load_paths, static_path, assets_path = _get_import_paths(config.registry.settings)
+
+    scss.config.LOAD_PATHS = ','.join([scss.config.LOAD_PATHS, ','.join(load_paths)])
+
+    scss.config.STATIC_ROOT = static_path
+    scss.config.STATIC_URL = config.registry.settings.get('scss.static_url_root')
+
+    scss.config.ASSETS_ROOT = assets_path
+    scss.config.ASSETS_URL = config.registry.settings.get('scss.output_url_root')
+
     config.add_renderer('scss', renderer_factory)

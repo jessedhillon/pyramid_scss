@@ -4,7 +4,7 @@ import pyramid_scss.controller as controller
 class RendererTestCase(PyramidScssTestCase):
     def test_nocompress(self):
         self.renderer.options.update({
-            'compress': False
+            'style': 'nested'
         })
 
         request = DummyRequest(self.config.registry)
@@ -17,7 +17,7 @@ class RendererTestCase(PyramidScssTestCase):
 
     def test_compress(self):
         self.renderer.options.update({
-            'compress': True
+            'style': 'compressed'
         })
 
         request = DummyRequest(self.config.registry)
@@ -39,7 +39,7 @@ class RendererTestCase(PyramidScssTestCase):
 
     def test_spritemap(self):
         self.renderer.options.update({
-            'compress': True
+            'style': 'compressed'
         })
 
         request = DummyRequest(self.config.registry)

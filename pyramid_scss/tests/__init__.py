@@ -34,7 +34,11 @@ class PyramidScssTestCase(TestCase):
         fixture_path = abspath_from_asset_spec('pyramid_scss.tests:fixtures')
         for path, dirs, files in os.walk(fixture_path):
             for name in files:
-                with open(os.path.join(path, name)) as f:
+                if name.endswith('.png'):
+                    mode = 'rb'
+                else:
+                    mode = 'r'
+                with open(os.path.join(path, name), mode) as f:
                     self.fixtures.setdefault(name, f.read())
 
 

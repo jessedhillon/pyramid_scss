@@ -1,7 +1,7 @@
 import os
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 from pyramid.interfaces import ITemplateRenderer
@@ -60,8 +60,8 @@ def renderer_factory(info):
     options = dict((k, asbool(v)) for k, v in options.items())
     return ScssRenderer(info, options)
 
+@implementer(ITemplateRenderer)
 class ScssRenderer(object):
-    implements(ITemplateRenderer)
     cache = None
 
     def __init__(self, info, options):

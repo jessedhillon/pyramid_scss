@@ -10,8 +10,7 @@ changes = open(os.path.join(here, 'CHANGES.rst'), 'r').read()
 requires = [
     'pyramid',
     'zope.interface',
-    'pyScss>=1.1.5',
-    'PIL',
+    'pyScss>=1.2',
 ]
 
 setup(

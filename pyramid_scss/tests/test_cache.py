@@ -7,7 +7,7 @@ import pyramid_scss.controller as controller
 class CacheTestCase(PyramidScssTestCase):
     @staticmethod
     def generate_id(count):
-        return ''.join(random.choice(string.ascii_uppercase + string.lowercase + string.digits) for i in range(count))
+        return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(count))
 
     def test_cache(self):
         self.renderer.options.update({

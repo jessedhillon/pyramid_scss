@@ -14,6 +14,8 @@ from scss import Scss
 
 Logger = logging.getLogger('pyramid_scss')
 
+__version__ = '0.4'
+
 def prefixed_keys(d, prefix):
     return dict([(k.replace(prefix, ''), v) for k, v in d.items() if k.startswith(prefix)])
 

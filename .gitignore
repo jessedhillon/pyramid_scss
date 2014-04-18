@@ -2,3 +2,5 @@
 build/
 dist/
 pyramid_scss/tests/fixtures/compiled/*
+*.pyc
+__pycache__/

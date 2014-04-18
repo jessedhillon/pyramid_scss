@@ -28,8 +28,8 @@ Change Log
 - Fixed `issue #4 <https://github.com/jessedhillon/pyramid_scss/issues/4>`_: exposed ASSETS_* and STATIC_* SCSS configuration settings.
 - Various minor bugfixes, see commit history.
 
-0.3
+0.4
 ------------
-*29 Mar 2014*
+*17 Apr 2014*
 
 - Compatibility with Python 3 and pyScss 1.2.

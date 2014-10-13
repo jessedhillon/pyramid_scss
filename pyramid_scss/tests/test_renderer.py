@@ -26,7 +26,7 @@ class RendererTestCase(PyramidScssTestCase):
         })
 
         rendered = self.renderer(self.fixtures.get('test.scss'), {'request': request})
-        assert rendered == self.fixtures.get('test_compress.css')
+        assert rendered.strip() == self.fixtures.get('test_compress.css')
 
     def test_import(self):
         request = DummyRequest(self.config.registry)

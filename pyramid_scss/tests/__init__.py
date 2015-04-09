@@ -46,4 +46,5 @@ class DummyRequest(object):
     def __init__(self, registry):
         self.registry = registry
         self.matchdict = {}
+        self.subpath = ()
         self.response = namedtuple('Response', ['content_type'])

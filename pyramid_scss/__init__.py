@@ -8,16 +8,19 @@ from pyramid.interfaces import ITemplateRenderer
 from pyramid.exceptions import ConfigurationError
 from pyramid.resource import abspath_from_asset_spec
 from pyramid.settings import asbool
+from pyramid_scss.controller import scss_static_view
 
 import scss
 from scss import Scss
 
-Logger = logging.getLogger('pyramid_scss')
 
 __version__ = '0.4'
+Logger = logging.getLogger('pyramid_scss')
+
 
 def prefixed_keys(d, prefix):
     return dict([(k.replace(prefix, ''), v) for k, v in d.items() if k.startswith(prefix)])
+
 
 def _get_import_paths(settings):
     # `scss.asset_path` is the path which should be searched to resolve a request
@@ -51,6 +54,7 @@ def _get_import_paths(settings):
 
     return (load_paths, static_path, assets_path)
 
+
 def renderer_factory(info):
     settings = prefixed_keys(info.settings, 'scss.')
 
@@ -61,6 +65,7 @@ def renderer_factory(info):
 
     options = dict((k, asbool(v)) for k, v in options.items())
     return ScssRenderer(info, options)
+
 
 @implementer(ITemplateRenderer)
 class ScssRenderer(object):
@@ -77,7 +82,7 @@ class ScssRenderer(object):
         if 'request' in system:
             request = system.get('request')
             request.response.content_type = 'text/css'
-            key = request.matchdict.get('css_path')
+            key = request.matchdict.get('css_path', request.subpath)
 
             if not self.options.get('cache', False) or key not in self.cache:
                 Logger.info('generating %s', key)
@@ -86,6 +91,7 @@ class ScssRenderer(object):
             return self.cache.get(key)
 
         return parser.compile(scss)
+
 
 def includeme(config):
     load_paths, static_path, assets_path = _get_import_paths(config.registry.settings)
@@ -99,3 +105,17 @@ def includeme(config):
     scss.config.ASSETS_URL = config.registry.settings.get('scss.output_url_root')
 
     config.add_renderer('scss', renderer_factory)
+
+    if config.registry.settings.get('scss.static_route'):
+        (name, spec) = [s.strip() for s in config.registry.settings['scss.static_route'].split('=')]
+        route_name = '__{}/'.format(name)
+        pattern = '/{}/*subpath'.format(name)
+        view = scss_static_view(spec)
+
+        config.add_route(route_name, pattern)
+        config.add_view(view, route_name=route_name, request_method='GET')
+
+        def register_static_route():
+            config.registry._static_url_registrations.append((None, spec, route_name))
+
+        config.action('scss_register_static_route', register_static_route)

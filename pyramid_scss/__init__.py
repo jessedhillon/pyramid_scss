@@ -94,28 +94,35 @@ class ScssRenderer(object):
 
 
 def includeme(config):
-    load_paths, static_path, assets_path = _get_import_paths(config.registry.settings)
-
-    scss.config.LOAD_PATHS = ','.join([scss.config.LOAD_PATHS, ','.join(load_paths)])
-
-    scss.config.STATIC_ROOT = static_path
-    scss.config.STATIC_URL = config.registry.settings.get('scss.static_url_root')
-
-    scss.config.ASSETS_ROOT = assets_path
-    scss.config.ASSETS_URL = config.registry.settings.get('scss.output_url_root')
-
     config.add_renderer('scss', renderer_factory)
 
-    if config.registry.settings.get('scss.static_route'):
-        (name, spec) = [s.strip() for s in config.registry.settings['scss.static_route'].split('=')]
-        route_name = '__{}/'.format(name)
-        pattern = '/{}/*subpath'.format(name)
-        view = scss_static_view(spec)
+    if config.registry.settings.get('scss.asset_path'):
+        load_paths, static_path, assets_path = _get_import_paths(config.registry.settings)
 
-        config.add_route(route_name, pattern)
-        config.add_view(view, route_name=route_name, request_method='GET')
+        scss.config.LOAD_PATHS = ','.join([scss.config.LOAD_PATHS, ','.join(load_paths)])
 
-        def register_static_route():
-            config.registry._static_url_registrations.append((None, spec, route_name))
+        scss.config.STATIC_ROOT = static_path
+        scss.config.STATIC_URL = config.registry.settings.get('scss.static_url_root')
 
-        config.action('scss_register_static_route', register_static_route)
+        scss.config.ASSETS_ROOT = assets_path
+        scss.config.ASSETS_URL = config.registry.settings.get('scss.output_url_root')
+
+    if config.registry.settings.get('scss.routes'):
+        for line in config.registry.settings['scss.routes'].strip().splitlines():
+            (name, specs) = [s.strip() for s in line.split('=', 1)]
+            specs = [s.strip() + ('/' if not s.endswith('/') else '') for s in specs.split(',')]
+            scss_spec, static_spec = specs
+
+            route_name = '__{}/'.format(name)
+            pattern = '/{}/*subpath'.format(name)
+            view = scss_static_view(scss_spec, static_spec)
+
+            config.add_route(route_name, pattern)
+            config.add_view(view, route_name=route_name, request_method='GET')
+
+            def register_static_route(route_name, spec):
+                Logger.debug('registering static route {}: {}'.format(route_name, spec))
+                config.registry._static_url_registrations.append((None, spec, route_name))
+
+            config.action('scss_register_static_route_{}'.format(name), register_static_route,
+                          args=(route_name, static_spec))

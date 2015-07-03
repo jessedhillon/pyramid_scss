@@ -8,7 +8,7 @@ readme = open(os.path.join(here, 'README.rst'), 'r').read()
 changes = open(os.path.join(here, 'CHANGES.rst'), 'r').read()
 
 requires = [
-    'pyramid',
+    'pyramid>=1.6a2',
     'zope.interface',
     'pyScss>=1.2',
 ]

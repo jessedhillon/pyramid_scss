@@ -122,7 +122,9 @@ def includeme(config):
 
             def register_static_route(route_name, spec):
                 Logger.debug('registering static route {}: {}'.format(route_name, spec))
-                config.registry._static_url_registrations.append((None, spec, route_name))
+                # TODO: fourth value here is `cachebust`, what does it do? see:
+                # /home/ubuntu/.virtualenvs/boutique/local/lib/python2.7/site-packages/pyramid-1.6a2-py2.7.egg/pyramid/config/views.py(1971)generate()
+                config.registry._static_url_registrations.append((None, spec, route_name, None))
 
             config.action('scss_register_static_route_{}'.format(name), register_static_route,
                           args=(route_name, static_spec))

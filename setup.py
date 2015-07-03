@@ -8,14 +8,14 @@ readme = open(os.path.join(here, 'README.rst'), 'r').read()
 changes = open(os.path.join(here, 'CHANGES.rst'), 'r').read()
 
 requires = [
-    'pyramid',
+    'pyramid>=1.6a2',
     'zope.interface',
     'pyScss>=1.2',
 ]
 
 setup(
     name='pyramid_scss',
-    version='0.4',
+    version='0.5',
     description="Adds support for SCSS to Pyramid projects",
     long_description="{0}\n\n{1}".format(readme, changes),
     classifiers=[

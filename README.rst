@@ -47,6 +47,13 @@ Second, assuming you are using URL dispatch, add a route to serve css::
     config.add_route('css', '/css/{css_path:.*}.css')
     config.add_view(route_name='css', view='pyramid_scss.controller.get_scss', renderer='scss', request_method='GET')
 
+Alternatively, you can configure ``pyramid_scss`` to shadow a path which already contains static assets, and default to a ``static_view`` if no SCSS stylesheet matches the request. In your ``project.ini``::
+
+    scss.static_route =
+        css = project:assets/css/
+
+With this configuration, a request for ``/css/style.css`` will first look for ``style.scss`` in ``scss.asset_path`` and if it's not found, then a ``static_view`` for ``project:assets/css/`` will be consulted. If you have this configuration, then you can generate a route for a static asset with ``static_url`` and those requests will transparently map to SCSS stylesheets.
+
 *TODO:* Add a traversal example.
 
 In the example above, an SCSS stylesheet located at ``myproject/assets/scss/style.scss`` (using the ``asset_path`` configured in the Configuration section) could be accessed by a URL request to ``http://myproject/css/style.css``. This route would also resolve stylesheets in subdirectories of ``asset_path``.
